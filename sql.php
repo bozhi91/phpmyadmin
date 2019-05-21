@@ -23,10 +23,6 @@ require_once 'libraries/check_user_privileges.inc.php';
 
 PageSettings::showGroup('Browse');
 
-
-echo "----------".$table;
-die;
-
 $response = Response::getInstance();
 $header   = $response->getHeader();
 $scripts  = $header->getScripts();
