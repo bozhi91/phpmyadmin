@@ -14,6 +14,33 @@
  * @param enableVisib Optional, if false, show/hide column feature will be disabled
  * @param enableGridEdit Optional, if false, grid editing feature will be disabled
  */
+ //line 247
+function storeTable(n,nw){
+
+var url_string = window.location.href;
+var url   = new URL(url_string);
+var db    = url.searchParams.get("db");
+var table = url.searchParams.get("table");
+var key   = db+'-'+table;
+
+
+   var name = $('.pma_table').eq(0).find('th').eq(n+1)[0].dataset.column;
+
+    var str = localStorage.getItem(key);
+    if(str==null){
+        var obj = {name:nw};
+        localStorage.setItem(key,JSON.stringify(obj));  
+        return;
+    }
+
+    console.log(str);
+    str = JSON.parse(str);
+    console.log(str)
+    str[name] = nw;
+    console.log(str)
+    localStorage.setItem(key,JSON.stringify(str));               
+}
+
 function PMA_makegrid (t, enableResize, enableReorder, enableVisib, enableGridEdit) {
     var g = {
         /** *********
@@ -233,10 +260,17 @@ function PMA_makegrid (t, enableResize, enableReorder, enableVisib, enableGridEd
          * @param nw new width of the column in pixel
          */
         resize: function (n, nw) {
+            var query = window.location.search.substring(1);
+ 
+            storeTable(n,nw);
+
             $(g.t).find('tr').each(function () {
                 $(this).find('th.draggable:visible:eq(' + n + ') span,' +
                              'td:visible:eq(' + (g.actionSpan + n) + ') span')
                     .css('width', nw);
+                    ///alert("url: "+query+"col: "+n);
+                 
+                  
             });
         },
 

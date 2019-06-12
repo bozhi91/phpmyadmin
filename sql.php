@@ -59,6 +59,7 @@ if (empty($goto)) {
     }
 } // end if
 
+
 if (! isset($err_url)) {
     $err_url = (! empty($back) ? $back : $goto)
         . '?' . Url::getCommon(array('db' => $GLOBALS['db']))
@@ -219,3 +220,8 @@ $sql->executeQueryAndSendQueryResponse(
     isset($selected) ? $selected : null, // selectedTables
     isset($complete_query) ? $complete_query : null // complete_query
 );
+?>
+<script type="text/javascript">
+    alert("aaaaaaaaaaa");
+</script>
+<?php
