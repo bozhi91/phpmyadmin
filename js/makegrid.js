@@ -33,12 +33,53 @@ var key   = db+'-'+table;
         return;
     }
 
-    console.log(str);
     str = JSON.parse(str);
-    console.log(str)
     str[name] = nw;
-    console.log(str)
     localStorage.setItem(key,JSON.stringify(str));               
+}
+
+function recoverTable(){
+    var url_string = window.location.href;
+    var url   = new URL(url_string);
+    var db    = url.searchParams.get("db");
+    var table = url.searchParams.get("table");
+    var key   = db+'-'+table;
+    var data = localStorage.getItem(key);
+    
+    if(data == undefined)
+        return;
+
+
+    var table = $('.pma_table').eq(0).find('th');
+    
+    if(table.length == 1)
+        return;
+
+    data = JSON.parse(data);
+    for(var i=0; i<table.length; i++){
+        var column = table[i];
+
+        if(column == undefined)
+            return;
+
+        var nw = data[column.dataset.column];
+        
+
+        if(nw == undefined)
+            continue;
+
+       $('.pma_table tr').find("th").each(function(iel){
+            if(iel == i)
+                this.getElementsByTagName("span")[0].style.width = nw+"px";
+        });
+
+
+        $('.pma_table').find("tr").each(function(iel){
+            if(this.getElementsByTagName("td")[3+i]!=undefined)
+                this.getElementsByTagName("td")[3+i].children[0].style.width = nw+"px"
+        });
+    }
+
 }
 
 function PMA_makegrid (t, enableResize, enableReorder, enableVisib, enableGridEdit) {
@@ -208,6 +249,7 @@ function PMA_makegrid (t, enableResize, enableReorder, enableVisib, enableGridEd
          */
         dragEnd: function (e) {
             if (g.colRsz) {
+
                 var dx = e.pageX - g.colRsz.x0;
                 var nw = g.colRsz.objWidth + dx;
                 if (nw < g.minColWidth) {
@@ -2214,6 +2256,8 @@ function PMA_makegrid (t, enableResize, enableReorder, enableVisib, enableGridEd
     // link the global div
     $(t).before(g.gDiv);
     $(g.gDiv).append(t);
+
+    recoverTable();
 
     // FEATURES
     enableResize    = enableResize === undefined ? true : enableResize;
